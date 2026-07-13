@@ -28,26 +28,44 @@ def inject_login_css():
             background: linear-gradient(135deg, #fff0f5 0%, #ffffff 100%) !important;
         }
 
-        /* Container do Login (Cartão centralizado) */
-        div[data-testid="stForm"] {
+        /* Transformar a Coluna 2 no Cartão de Login */
+        [data-testid="column"]:nth-child(2) {
             background-color: white !important;
             padding: 3rem 2rem !important;
             border-radius: 20px !important;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05) !important;
-            max-width: 400px !important;
-            margin: 0 auto !important;
-            border: 1px solid #f0e6ea;
+            margin-top: 5vh;
         }
 
-        /* Títulos do formulário */
+        /* Remover estilo padrão do Form do Authenticator */
+        div[data-testid="stForm"] {
+            border: none !important;
+            background: transparent !important;
+            padding: 0 !important;
+            box-shadow: none !important;
+        }
+
+        /* Esconder o título padrão 'Login' do authenticator */
         div[data-testid="stForm"] h2 {
-            text-align: center !important;
-            color: #333 !important;
-            font-family: 'Inter', sans-serif !important;
-            font-weight: 700 !important;
+            display: none !important;
         }
 
-        /* Botão de Login */
+        /* Estilos do Header Customizado */
+        .login-header { text-align: center; margin-bottom: 20px; }
+        .login-header h3 { color: #c74a7a !important; font-weight: 800 !important; font-size: 1.5rem !important; margin: 0 !important; padding:0 !important; }
+        .login-header .subtitle { color: #888; font-size: 0.8rem; text-transform: uppercase; margin-bottom: 2rem; margin-top:0; }
+        .login-header h2 { color: #222 !important; font-weight: 800 !important; margin: 0 !important; font-size: 1.8rem !important; display:block !important; padding:0 !important;}
+        .login-header .sub-area { color: #888; margin-top: 5px; margin-bottom: 20px; }
+
+        .divider { text-align: center; color: #aaa; margin: 30px 0; position: relative; font-size: 14px;}
+        .divider::before, .divider::after { content: ""; position: absolute; top: 50%; width: 42%; height: 1px; background: #eee; }
+        .divider::before { left: 0; }
+        .divider::after { right: 0; }
+
+        .footer-link { text-align: center; color: #aaa; font-size: 0.9rem; margin-top: 30px; cursor: pointer; }
+        .footer-link:hover { color: #c74a7a; }
+
+        /* Inputs de Texto */
         div[data-testid="stForm"] button {
             background: linear-gradient(90deg, #c74a7a 0%, #5d8a66 100%) !important;
             color: white !important;
@@ -174,17 +192,38 @@ authenticator = stauth.Authenticate(
     cookie_expiry_days=30
 )
 
-name, authentication_status, username = authenticator.login(location="main")
+if "authentication_status" not in st.session_state or st.session_state["authentication_status"] != True:
+    inject_login_css()
+    
+    col1, col2, col3 = st.columns([1, 1.5, 1])
+    
+    with col2:
+        st.markdown('''
+            <div class="login-header">
+                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="60">
+                <h3>SERENYA</h3>
+                <p class="subtitle">HOME CARE — Painel de Gestão</p>
+                <h2>Área Restrita</h2>
+                <p class="sub-area">Acesso exclusivo para a Diretoria</p>
+            </div>
+        ''', unsafe_allow_html=True)
+        
+        name, authentication_status, username = authenticator.login(location="main")
+        
+        if authentication_status == False:
+            st.error("Usuário/senha incorretos")
+            
+        st.markdown('<div class="divider">ou</div>', unsafe_allow_html=True)
+        
+        if st.button("🌐 Entrar com Google", use_container_width=True):
+            st.info("Login com Google estará disponível em breve.")
+            
+        st.markdown('<div class="footer-link">← Voltar ao site</div>', unsafe_allow_html=True)
 
-if authentication_status == False:
-    inject_login_css()
-    st.error("Usuário/senha incorretos")
-elif authentication_status == None:
-    inject_login_css()
-    # Adicionar o logo na tela de login
-    st.markdown('<div style="text-align: center; margin-bottom: -20px;"><img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="80"></div>', unsafe_allow_html=True)
-    st.warning("Por favor, insira seu usuário e senha.")
-elif authentication_status:
+else:
+    # We need to run it to get the values when already logged in
+    name, authentication_status, username = authenticator.login(location="main")
+    
     inject_dashboard_css()
     # Authenticated Layout
     authenticator.logout("Sair", "sidebar")

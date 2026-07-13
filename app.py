@@ -46,7 +46,9 @@ def inject_login_css():
         }
 
         /* Esconder o título padrão 'Login' do authenticator */
-        div[data-testid="stForm"] h2 {
+        div[data-testid="stForm"] h1, 
+        div[data-testid="stForm"] h2, 
+        div[data-testid="stForm"] h3 {
             display: none !important;
         }
 
@@ -66,7 +68,9 @@ def inject_login_css():
         .footer-link:hover { color: #c74a7a; }
 
         /* Inputs de Texto */
-        div[data-testid="stForm"] button {
+        div[data-testid="stForm"] button[kind="formSubmit"],
+        div[data-testid="stForm"] button[kind="primaryFormSubmit"],
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"] {
             background: linear-gradient(90deg, #c74a7a 0%, #5d8a66 100%) !important;
             color: white !important;
             border: none !important;
@@ -77,11 +81,15 @@ def inject_login_css():
             transition: all 0.3s ease !important;
         }
         
-        div[data-testid="stForm"] button p {
+        div[data-testid="stForm"] button[kind="formSubmit"] p,
+        div[data-testid="stForm"] button[kind="primaryFormSubmit"] p,
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"] p {
             color: white !important;
         }
 
-        div[data-testid="stForm"] button:hover {
+        div[data-testid="stForm"] button[kind="formSubmit"]:hover,
+        div[data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
+        div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover {
             opacity: 0.9 !important;
             transform: translateY(-2px) !important;
         }
@@ -181,9 +189,9 @@ if "authentication_status" not in st.session_state or st.session_state["authenti
     with col2:
         st.markdown('''
             <div class="login-header">
-                <img src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png" width="60">
-                <h3>SERENYA</h3>
-                <p class="subtitle">HOME CARE — Painel de Gestão</p>
+                <img src="https://cdn-icons-png.flaticon.com/512/2857/2857037.png" width="60">
+                <h3>BISPADO CONTROLE</h3>
+                <p class="subtitle">SISTEMA DE GESTÃO FINANCEIRA</p>
                 <h2>Área Restrita</h2>
                 <p class="sub-area">Acesso exclusivo para a Diretoria</p>
             </div>

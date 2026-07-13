@@ -52,24 +52,16 @@ def render_sidebar(authenticator=None):
     # Injetando CSS para estilizar os botões do sidebar
     st.sidebar.markdown("""
         <style>
-        [data-testid="stSidebar"] [data-testid="column"]:nth-child(1) button {
-            background-color: #f5f5f5 !important;
-            border: 1px solid #e0e0e0 !important;
-            color: #555 !important;
-            border-radius: 10px !important;
-            font-weight: 600 !important;
-        }
-        [data-testid="stSidebar"] [data-testid="column"]:nth-child(1) button:hover {
-            background-color: #eeeeee !important;
-        }
-        [data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button {
+        /* Estilizando o botão de logout */
+        [data-testid="stSidebar"] button {
             background-color: #fef0f0 !important;
             border: 1px solid #fbd5d5 !important;
             color: #c81e1e !important;
             border-radius: 10px !important;
             font-weight: 600 !important;
+            width: 100%;
         }
-        [data-testid="stSidebar"] [data-testid="column"]:nth-child(2) button:hover {
+        [data-testid="stSidebar"] button:hover {
             background-color: #fde8e8 !important;
         }
         </style>

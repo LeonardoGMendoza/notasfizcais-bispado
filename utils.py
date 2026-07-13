@@ -47,7 +47,7 @@ def render_sidebar(authenticator=None):
     """, unsafe_allow_html=True)
     
     if authenticator:
-        authenticator.logout("Sair", "main")
+        authenticator.logout("Sair", "sidebar")
             
     # Injetando CSS para estilizar os botões do sidebar
     st.sidebar.markdown("""

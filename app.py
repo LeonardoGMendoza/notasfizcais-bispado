@@ -202,8 +202,8 @@ if "authentication_status" not in st.session_state or st.session_state["authenti
         st.markdown('<div class="footer-link">← Voltar ao site</div>', unsafe_allow_html=True)
 
 else:
-    # We need to run it to get the values when already logged in
-    name, authentication_status, username = authenticator.login(location="main")
+    name = st.session_state.get("name", "Usuário")
+    username = st.session_state.get("username", "user")
     
     inject_dashboard_css()
     # Authenticated Layout

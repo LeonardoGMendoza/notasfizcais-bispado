@@ -2,6 +2,7 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import os
 
+@st.cache_resource
 def get_authenticator():
     cookie_key = os.getenv("COOKIE_KEY", "secret_bispado_key")
     credentials = {

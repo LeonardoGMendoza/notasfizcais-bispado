@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="Notas Fiscais", page_icon="📊", layout="wide")
 if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
     st.switch_page("app.py")
 
@@ -12,7 +13,6 @@ import plotly.express as px
 import plotly.graph_objects as go
 from database import get_notas_fiscais
 
-st.set_page_config(page_title="Notas Fiscais", page_icon="📊", layout="wide")
 
 st.title("📊 Controle de Notas Fiscais")
 

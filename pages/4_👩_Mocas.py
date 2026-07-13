@@ -1,4 +1,5 @@
 import streamlit as st
+st.set_page_config(page_title="Moças", page_icon="👩", layout="wide")
 if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
     st.switch_page("app.py")
 
@@ -10,7 +11,6 @@ import streamlit as st
 import pandas as pd
 from database import get_mocas
 
-st.set_page_config(page_title="Moças", page_icon="👩", layout="wide")
 
 st.title("👩 Acompanhamento - Moças")
 

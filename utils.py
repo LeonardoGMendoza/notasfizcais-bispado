@@ -43,16 +43,11 @@ def render_sidebar(authenticator=None):
     st.sidebar.markdown(f"""
         <div style="margin-bottom: 5px;">
             <div style="font-weight: 800; font-size: 1.1rem; color: #333; line-height: 1.2;">{name}</div>
-            <div style="color: #888; font-size: 0.9rem;">Diretoria</div>
         </div>
     """, unsafe_allow_html=True)
     
-    col1, col2 = st.sidebar.columns(2)
-    with col1:
-        st.button("← Site", use_container_width=True)
-    with col2:
-        if authenticator:
-            authenticator.logout("Sair", "main")
+    if authenticator:
+        authenticator.logout("Sair", "main")
             
     # Injetando CSS para estilizar os botões do sidebar
     st.sidebar.markdown("""

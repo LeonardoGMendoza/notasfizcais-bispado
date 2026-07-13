@@ -6,10 +6,10 @@ def get_authenticator():
     cookie_key = os.getenv("COOKIE_KEY", "secret_bispado_key")
     credentials = {
         "usernames": {
-            "bispo": {"email": "rogerio@bispado.com", "name": "Bispo Rogério", "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O"},
-            "vicente": {"email": "vicente@bispado.com", "name": "1º Cons. Vicente", "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O"},
-            "almir": {"email": "almir@bispado.com", "name": "2º Cons. Almir", "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O"},
-            "leonardo": {"email": "leonardo@bispado.com", "name": "Sec. Leonardo", "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O"}
+            "bispo": {"email": "rogerio@bispado.com", "name": "Bispo Rogério", "password": "$2b$12$Ns0aUQ60gGd/mLbX/.l/N.TCegKc5DBTeRvowIgSrfd7v7kANR2SG"},
+            "vicente": {"email": "vicente@bispado.com", "name": "1º Cons. Vicente", "password": "$2b$12$Ns0aUQ60gGd/mLbX/.l/N.TCegKc5DBTeRvowIgSrfd7v7kANR2SG"},
+            "almir": {"email": "almir@bispado.com", "name": "2º Cons. Almir", "password": "$2b$12$Ns0aUQ60gGd/mLbX/.l/N.TCegKc5DBTeRvowIgSrfd7v7kANR2SG"},
+            "leonardo": {"email": "leonardo@bispado.com", "name": "Sec. Leonardo", "password": "$2b$12$Ns0aUQ60gGd/mLbX/.l/N.TCegKc5DBTeRvowIgSrfd7v7kANR2SG"}
         }
     }
     return stauth.Authenticate(credentials, "bispado_dashboard", cookie_key, cookie_expiry_days=30)

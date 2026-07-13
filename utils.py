@@ -52,6 +52,19 @@ def render_sidebar(authenticator=None):
     # Injetando CSS para estilizar os botões do sidebar
     st.sidebar.markdown("""
         <style>
+        /* Reordenar o menu lateral para colocar nosso conteúdo no TOPO */
+        [data-testid="stSidebar"] > div:first-child > div:first-child {
+            display: flex;
+            flex-direction: column;
+        }
+        [data-testid="stSidebarNav"] {
+            order: 2;
+            margin-top: 10px;
+        }
+        [data-testid="stSidebarUserContent"] {
+            order: 1;
+        }
+        
         /* Estilizando o botão de logout para ocupar a largura total */
         [data-testid="stSidebar"] div.stButton {
             width: 100% !important;

@@ -27,9 +27,9 @@ def render_sidebar():
     
     st.sidebar.markdown("<br>", unsafe_allow_html=True)
     if os.path.exists(avatar_file):
-        st.sidebar.image(avatar_file, use_container_width=True)
+        st.sidebar.image(avatar_file, use_column_width=True)
     else:
-        st.sidebar.image(f"https://ui-avatars.com/api/?name={name}&background=random&size=150", use_container_width=True)
+        st.sidebar.image(f"https://ui-avatars.com/api/?name={name}&background=random&size=150", use_column_width=True)
         
     uploaded_file = st.sidebar.file_uploader("Trocar Foto", type=["png", "jpg", "jpeg"])
     if uploaded_file is not None:

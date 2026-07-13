@@ -4,6 +4,7 @@ import yaml
 from yaml.loader import SafeLoader
 import os
 from utils import render_sidebar, get_authenticator
+from auth_google import get_google_auth_url, get_google_user_info, AUTHORIZED_EMAILS
 
 # Set global configuration
 st.set_page_config(
@@ -12,6 +13,23 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# --- GOOGLE OAUTH CALLBACK HANDLER ---
+if "authentication_status" not in st.session_state:
+    st.session_state["authentication_status"] = None
+
+if "code" in st.query_params and st.session_state["authentication_status"] != True:
+    code = st.query_params["code"]
+    user_info = get_google_user_info(code)
+    if user_info and user_info.get("email") in AUTHORIZED_EMAILS:
+        st.session_state["authentication_status"] = True
+        st.session_state["username"] = user_info["email"]
+        st.session_state["name"] = user_info.get("name", "Usuário Google")
+        st.query_params.clear()
+        st.rerun()
+    elif user_info:
+        st.error(f"E-mail {user_info.get('email')} não autorizado a acessar o sistema.")
+        st.query_params.clear()
 
 # --- LOGIN CSS ---
 def inject_login_css():
@@ -92,32 +110,40 @@ def inject_login_css():
             display: none !important;
         }
 
-        /* Estilo para o Botão do Google (Primeiro botão) */
-        div.stButton:nth-of-type(1) button {
-            background-color: white !important;
-            border: 1px solid #ddd !important;
-            color: #444 !important;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
-            border-radius: 8px !important;
-            padding: 10px 20px !important;
-            font-weight: 600 !important;
-            transition: all 0.3s ease !important;
+        /* Botão do Google customizado (HTML/CSS direto) */
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: white;
+            border: 1px solid #ddd;
+            color: #444;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
         }
-        div.stButton:nth-of-type(1) button:hover {
-            border-color: #bbb !important;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        .google-btn:hover {
+            border-color: #bbb;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: #444;
         }
         
-        /* O Botão de Acessar com Senha (Segundo botão) */
-        div.stButton:nth-of-type(2) button {
+        /* O Botão de Acessar com Senha (Primeiro stButton agora) */
+        div.stButton:nth-of-type(1) button {
             background: transparent !important;
             color: #9b51e0 !important;
             border: none !important;
             box-shadow: none !important;
             padding: 10px 20px !important;
             font-weight: 600 !important;
+            width: 100% !important;
         }
-        div.stButton:nth-of-type(2) button:hover {
+        div.stButton:nth-of-type(1) button:hover {
             color: #7b31c0 !important;
             text-decoration: underline !important;
             background: transparent !important;
@@ -234,8 +260,8 @@ if "authentication_status" not in st.session_state or st.session_state["authenti
             
         if not st.session_state["show_traditional_login"]:
             # --- TELA PRINCIPAL (Google Login) ---
-            if st.button("🌐 Entrar com Google (E-mail Autorizado)", use_container_width=True):
-                st.info("Configuração do Google em andamento. Aguardando credenciais.")
+            auth_url = get_google_auth_url()
+            st.markdown(f'<a href="{auth_url}" target="_self" class="google-btn">🌐 Entrar com Google (E-mail Autorizado)</a>', unsafe_allow_html=True)
                 
             st.markdown('<div class="footer-link">Não tem uma conta Gmail autorizada?</div>', unsafe_allow_html=True)
             if st.button("Acessar com Senha Tradicional", use_container_width=True, key="btn_trad_login"):

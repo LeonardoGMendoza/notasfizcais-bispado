@@ -87,11 +87,24 @@ def inject_login_css():
             color: white !important;
         }
 
-        div[data-testid="stForm"] button[kind="formSubmit"]:hover,
-        div[data-testid="stForm"] button[kind="primaryFormSubmit"]:hover,
-        div[data-testid="stForm"] button[kind="secondaryFormSubmit"]:hover {
-            opacity: 0.9 !important;
-            transform: translateY(-2px) !important;
+        /* Estilo para Botões fora do Form (Google e Alternar) */
+        button[kind="secondary"] {
+            border-radius: 10px !important;
+            padding: 10px 20px !important;
+            font-weight: 600 !important;
+            transition: all 0.3s ease !important;
+        }
+        
+        /* O Botão do Google será o primeiro botão na tela */
+        button[key="btn_trad_login"] {
+            background: transparent !important;
+            color: #9b51e0 !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+        button[key="btn_trad_login"]:hover {
+            color: #7b31c0 !important;
+            text-decoration: underline !important;
         }
         
         /* Alerta amarelo arrumado */
@@ -197,17 +210,32 @@ if "authentication_status" not in st.session_state or st.session_state["authenti
             </div>
         ''', unsafe_allow_html=True)
         
-        name, authentication_status, username = authenticator.login(location="main")
+        name, authentication_status, username = None, None, None
         
-        if authentication_status == False:
-            st.error("Usuário/senha incorretos")
+        # Variável de estado para controlar a exibição do login tradicional
+        if "show_traditional_login" not in st.session_state:
+            st.session_state["show_traditional_login"] = False
             
-        st.markdown('<div class="divider">ou</div>', unsafe_allow_html=True)
-        
-        if st.button("🌐 Entrar com Google", use_container_width=True):
-            st.info("Login com Google estará disponível em breve.")
+        if not st.session_state["show_traditional_login"]:
+            # --- TELA PRINCIPAL (Google Login) ---
+            if st.button("🌐 Entrar com Google (E-mail Autorizado)", use_container_width=True):
+                st.info("Configuração do Google em andamento. Aguardando credenciais.")
+                
+            st.markdown('<div class="footer-link">Não tem uma conta Gmail autorizada?</div>', unsafe_allow_html=True)
+            if st.button("Acessar com Senha Tradicional", use_container_width=True, key="btn_trad_login"):
+                st.session_state["show_traditional_login"] = True
+                st.rerun()
+        else:
+            # --- TELA DE LOGIN TRADICIONAL ---
+            name, authentication_status, username = authenticator.login(location="main")
             
-        st.markdown('<div class="footer-link">← Voltar ao site</div>', unsafe_allow_html=True)
+            if authentication_status == False:
+                st.error("Usuário/senha incorretos")
+                
+            st.markdown('<div class="divider">ou</div>', unsafe_allow_html=True)
+            if st.button("← Voltar para Login com Google", use_container_width=True, key="btn_back_google"):
+                st.session_state["show_traditional_login"] = False
+                st.rerun()
 
 else:
     name = st.session_state.get("name", "Usuário")

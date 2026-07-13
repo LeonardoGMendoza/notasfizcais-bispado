@@ -3,7 +3,7 @@ import streamlit_authenticator as stauth
 import yaml
 from yaml.loader import SafeLoader
 import os
-from utils import render_sidebar
+from utils import render_sidebar, get_authenticator
 
 # Set global configuration
 st.set_page_config(
@@ -171,42 +171,7 @@ def inject_dashboard_css():
     """, unsafe_allow_html=True)
 
 # --- AUTHENTICATION SETUP ---
-# In a real app, generate hashes with stauth.Hasher(['password']).generate()
-# For this MVP, using pre-hashed '123456' -> $2b$12$....
-# Bispo, Vicente, Almir, Leonardo
-cookie_key = os.getenv("COOKIE_KEY", "secret_bispado_key")
-
-credentials = {
-    "usernames": {
-        "bispo": {
-            "email": "rogerio@bispado.com",
-            "name": "Bispo Rogério",
-            "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O" # 123456
-        },
-        "vicente": {
-            "email": "vicente@bispado.com",
-            "name": "1º Cons. Vicente",
-            "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O" # 123456
-        },
-        "almir": {
-            "email": "almir@bispado.com",
-            "name": "2º Cons. Almir",
-            "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O" # 123456
-        },
-        "leonardo": {
-            "email": "leonardo@bispado.com",
-            "name": "Sec. Leonardo",
-            "password": "$2b$12$kU467t/4R3B8mZcMv6C4pOW75z1fE1x/M39T7QZ.l.c.T98wN2h1O" # 123456
-        }
-    }
-}
-
-authenticator = stauth.Authenticate(
-    credentials,
-    "bispado_dashboard",
-    cookie_key,
-    cookie_expiry_days=30
-)
+authenticator = get_authenticator()
 
 if "authentication_status" not in st.session_state or st.session_state["authentication_status"] != True:
     inject_login_css()
@@ -242,7 +207,6 @@ else:
     
     inject_dashboard_css()
     # Authenticated Layout
-    authenticator.logout("Sair", "sidebar")
     
     # Render the sidebar (Profile picture and name)
     render_sidebar()

@@ -1,3 +1,6 @@
+from utils import render_sidebar
+render_sidebar()
+
 import streamlit as st
 import pandas as pd
 from database import get_mocas

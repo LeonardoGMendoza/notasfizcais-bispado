@@ -98,14 +98,14 @@ def inject_login_css():
 def inject_dashboard_css():
     st.markdown("""
         <style>
-        /* Dark Theme Variables */
+        /* Light Theme Variables (Serenya Style) */
         :root {
-            --primary: #4F46E5;
-            --primary-hover: #4338CA;
-            --bg-color: #0F172A;
-            --card-bg: #1E293B;
-            --text-main: #F8FAFC;
-            --text-muted: #94A3B8;
+            --primary: #D94F8A;
+            --primary-hover: #B03570;
+            --bg-color: #f7f9fc;
+            --card-bg: #ffffff;
+            --text-main: #1a1a1a;
+            --text-muted: #888888;
         }
         
         /* Main Application Background */
@@ -117,30 +117,46 @@ def inject_dashboard_css():
         /* Sidebar styling */
         [data-testid="stSidebar"] {
             background-color: var(--card-bg) !important;
-            border-right: 1px solid #334155;
+            border-right: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 4px 0 24px rgba(0,0,0,0.02);
+        }
+        
+        [data-testid="stSidebarNav"] span {
+            color: var(--text-main);
+            font-weight: 600;
         }
         
         /* Headers */
         h1, h2, h3 {
             color: var(--text-main) !important;
             font-family: 'Inter', sans-serif;
-            font-weight: 700 !important;
+            font-weight: 800 !important;
         }
         
         /* Metric Cards */
         [data-testid="stMetricValue"] {
-            font-size: 2rem !important;
-            color: #10B981 !important; /* Emerald green */
+            font-size: 2.2rem !important;
+            color: #222 !important; 
+            font-weight: 800 !important;
+        }
+        [data-testid="stMetricLabel"] {
+            color: #777 !important;
+            font-size: 0.9rem !important;
+            font-weight: 600 !important;
         }
         
         /* Custom Container Cards */
         .custom-card {
             background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            border: 1px solid #334155;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid rgba(0,0,0,0.04);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
             margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+        .custom-card:hover {
+            transform: translateY(-3px);
         }
         
         /* Profile Image */

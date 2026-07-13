@@ -87,24 +87,40 @@ def inject_login_css():
             color: white !important;
         }
 
-        /* Estilo para Botões fora do Form (Google e Alternar) */
-        button[kind="secondary"] {
-            border-radius: 10px !important;
+        /* Esconder o sidebar na tela de login */
+        [data-testid="stSidebar"] {
+            display: none !important;
+        }
+
+        /* Estilo para o Botão do Google (Primeiro botão) */
+        div.stButton:nth-of-type(1) button {
+            background-color: white !important;
+            border: 1px solid #ddd !important;
+            color: #444 !important;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05) !important;
+            border-radius: 8px !important;
             padding: 10px 20px !important;
             font-weight: 600 !important;
             transition: all 0.3s ease !important;
         }
+        div.stButton:nth-of-type(1) button:hover {
+            border-color: #bbb !important;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1) !important;
+        }
         
-        /* O Botão do Google será o primeiro botão na tela */
-        button[key="btn_trad_login"] {
+        /* O Botão de Acessar com Senha (Segundo botão) */
+        div.stButton:nth-of-type(2) button {
             background: transparent !important;
             color: #9b51e0 !important;
             border: none !important;
             box-shadow: none !important;
+            padding: 10px 20px !important;
+            font-weight: 600 !important;
         }
-        button[key="btn_trad_login"]:hover {
+        div.stButton:nth-of-type(2) button:hover {
             color: #7b31c0 !important;
             text-decoration: underline !important;
+            background: transparent !important;
         }
         
         /* Alerta amarelo arrumado */

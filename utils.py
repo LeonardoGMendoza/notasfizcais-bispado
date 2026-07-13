@@ -2,7 +2,6 @@ import streamlit as st
 import streamlit_authenticator as stauth
 import os
 
-@st.cache_resource
 def get_authenticator():
     cookie_key = os.getenv("COOKIE_KEY", "secret_bispado_key")
     credentials = {
@@ -15,7 +14,7 @@ def get_authenticator():
     }
     return stauth.Authenticate(credentials, "bispado_dashboard", cookie_key, cookie_expiry_days=30)
 
-def render_sidebar():
+def render_sidebar(authenticator=None):
     if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
         return
 
@@ -52,8 +51,8 @@ def render_sidebar():
     with col1:
         st.button("← Site", use_container_width=True)
     with col2:
-        auth = get_authenticator()
-        auth.logout("Sair", "main")
+        if authenticator:
+            authenticator.logout("Sair", "main")
             
     # Injetando CSS para estilizar os botões do sidebar
     st.sidebar.markdown("""

@@ -217,7 +217,7 @@ else:
     # Authenticated Layout
     
     # Render the sidebar (Profile picture and name)
-    render_sidebar()
+    render_sidebar(authenticator)
     
     st.title(f"Bem-vindo ao Dashboard do Bispado ⛪")
     

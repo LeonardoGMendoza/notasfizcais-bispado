@@ -2,8 +2,9 @@ import streamlit as st
 if "authentication_status" not in st.session_state or not st.session_state["authentication_status"]:
     st.switch_page("app.py")
 
-from utils import render_sidebar
-render_sidebar()
+from utils import render_sidebar, get_authenticator
+authenticator = get_authenticator()
+render_sidebar(authenticator)
 
 import streamlit as st
 import pandas as pd

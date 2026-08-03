@@ -226,31 +226,42 @@ elif mostrar == "Não Batizados":
 if busca:
     df_vis = df_vis[df_vis["nome"].str.lower().str.contains(busca.lower())]
 
-# ── HELPER: gerar cartão ───────────────────────────────────────────────────────
-def card_html(row):
-    sexo_class = "m" if row["sexo"] == "M" else "f"
-    tag_sexo   = f'<span class="tag tag-{sexo_class}">{"👦 Rapaz" if row["sexo"] == "M" else "👧 Moça"}</span>'
-    nb_tag     = '<span class="nb-tag">Não Batizado</span>' if not row["batizado"] else ""
-    
-    first = row["nome"].split(",")[0].strip()
-    avatar = f"https://ui-avatars.com/api/?name={first}&background={'3B82F6' if row['sexo']=='M' else 'D94F8A'}&color=fff&size=100&bold=true"
-    
-    contato_lines = []
-    if row["tel"]:
-        contato_lines.append(f'📞 {row["tel"]}')
-    if row["email"]:
-        contato_lines.append(f'✉️ <a href="mailto:{row["email"]}">{row["email"]}</a>')
-    contato_html = "<br>".join(contato_lines) if contato_lines else '<span style="color:#d1d5db">Sem contato registrado</span>'
+# ── HELPER: renderizar cartão individualmente ──────────────────────────────────
+def render_jovem_card(row):
+    cor_borda  = "#3B82F6" if row["sexo"] == "M" else "#D94F8A"
+    cor_avatar = "3B82F6"  if row["sexo"] == "M" else "D94F8A"
+    emoji_sexo = "👦 Rapaz" if row["sexo"] == "M" else "👧 Moça"
+    bg_tag     = "#dbeafe" if row["sexo"] == "M" else "#fce7f3"
+    cor_tag    = "#1d4ed8" if row["sexo"] == "M" else "#9d174d"
+    nb_html    = '<span style="background:#fef3c7;color:#92400e;border-radius:6px;padding:1px 7px;font-size:0.68rem;font-weight:700;margin-left:6px;">Não Batizado</span>' if not row["batizado"] else ""
 
-    return f"""
-    <div class="youth-card">
-      <img src="{avatar}" class="youth-avatar avatar-{sexo_class}" alt="">
-      <div class="youth-info">
-        <div class="youth-name">{row['nome']}{nb_tag}</div>
-        <div class="youth-meta">{tag_sexo} &nbsp;·&nbsp; {row['idade']} anos &nbsp;·&nbsp; {row['nasc']}</div>
-        <div class="youth-contact">{contato_html}</div>
-      </div>
-    </div>"""
+    first  = row["nome"].split(",")[0].strip().replace(" ", "+")
+    avatar = "https://ui-avatars.com/api/?name=" + first + "&background=" + cor_avatar + "&color=fff&size=100&bold=true"
+
+    contato_parts = []
+    if row["tel"]:
+        contato_parts.append("📞 " + row["tel"])
+    if row["email"]:
+        contato_parts.append("✉️ " + row["email"])
+    contato_txt = " | ".join(contato_parts) if contato_parts else "Sem contato registrado"
+
+    st.markdown(
+        f'<div style="background:#fff;border-radius:16px;padding:16px 18px;'
+        f'border:1px solid rgba(0,0,0,0.05);box-shadow:0 4px 14px rgba(0,0,0,0.04);'
+        f'display:flex;gap:14px;align-items:flex-start;margin-bottom:10px;'
+        f'border-left:3px solid {cor_borda};">'
+        f'<img src="{avatar}" style="width:48px;height:48px;border-radius:50%;'
+        f'border:2px solid {cor_borda};flex-shrink:0;" alt="">'
+        f'<div style="flex:1;">'
+        f'<div style="font-weight:700;font-size:0.9rem;">{row["nome"]}{nb_html}</div>'
+        f'<div style="font-size:0.78rem;color:#6b7280;margin:4px 0;">'
+        f'<span style="background:{bg_tag};color:{cor_tag};border-radius:8px;'
+        f'padding:1px 8px;font-weight:700;font-size:0.7rem;">{emoji_sexo}</span>'
+        f' &nbsp;·&nbsp; {row["idade"]} anos &nbsp;·&nbsp; {row["nasc"]}</div>'
+        f'<div style="font-size:0.75rem;color:#374151;">{contato_txt}</div>'
+        f'</div></div>',
+        unsafe_allow_html=True
+    )
 
 # ── SEÇÃO RAPAZES ─────────────────────────────────────────────────────────────
 df_rap_vis = df_vis[df_vis["sexo"] == "M"]
@@ -261,10 +272,11 @@ if not df_rap_vis.empty:
       <span class="sec-count">{len(df_rap_vis)}</span>
       <div class="sec-line"></div>
     </div>
-    <div class="youth-grid">
-      {''.join(card_html(row) for _, row in df_rap_vis.iterrows())}
-    </div>
     """, unsafe_allow_html=True)
+    cols = st.columns(2)
+    for i, (_, row) in enumerate(df_rap_vis.iterrows()):
+        with cols[i % 2]:
+            render_jovem_card(row)
 
 # ── SEÇÃO MOÇAS ───────────────────────────────────────────────────────────────
 df_moc_vis = df_vis[df_vis["sexo"] == "F"]
@@ -275,10 +287,11 @@ if not df_moc_vis.empty:
       <span class="sec-count">{len(df_moc_vis)}</span>
       <div class="sec-line"></div>
     </div>
-    <div class="youth-grid">
-      {''.join(card_html(row) for _, row in df_moc_vis.iterrows())}
-    </div>
     """, unsafe_allow_html=True)
+    cols = st.columns(2)
+    for i, (_, row) in enumerate(df_moc_vis.iterrows()):
+        with cols[i % 2]:
+            render_jovem_card(row)
 
 if df_rap_vis.empty and df_moc_vis.empty:
     st.info("Nenhum jovem encontrado com os filtros selecionados.")

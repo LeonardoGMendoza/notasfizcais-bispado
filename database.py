@@ -43,6 +43,23 @@ def fetch_data(query, params=None):
     finally:
         conn.close()
 
+def execute_query(query, params=None):
+    """Executa INSERT/UPDATE/DELETE e retorna True se bem-sucedido."""
+    conn = get_connection()
+    if conn is None:
+        return False
+    try:
+        with conn.cursor() as cur:
+            cur.execute(query, params)
+        conn.commit()
+        return True
+    except Exception as e:
+        conn.rollback()
+        print(f"Erro ao executar query: {e}")
+        return False
+    finally:
+        conn.close()
+
 def get_notas_fiscais():
     query = "SELECT * FROM notas_fiscais ORDER BY data DESC;"
     return fetch_data(query)
@@ -50,6 +67,21 @@ def get_notas_fiscais():
 def get_jovens_missao():
     query = "SELECT * FROM jovens_missao ORDER BY data_prevista ASC;"
     return fetch_data(query)
+
+def inserir_missionario(nome, idade, status_processo, data_prevista):
+    query = """
+        INSERT INTO jovens_missao (nome, idade, status_processo, data_prevista)
+        VALUES (%s, %s, %s, %s);
+    """
+    return execute_query(query, (nome, idade, status_processo, data_prevista))
+
+def deletar_missionario(id_missao):
+    query = "DELETE FROM jovens_missao WHERE id = %s;"
+    return execute_query(query, (id_missao,))
+
+def atualizar_status_missionario(id_missao, novo_status):
+    query = "UPDATE jovens_missao SET status_processo = %s WHERE id = %s;"
+    return execute_query(query, (novo_status, id_missao))
 
 def get_rapazes():
     query = "SELECT * FROM rapazes ORDER BY nome ASC;"

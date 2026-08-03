@@ -276,49 +276,16 @@ if filtro_urgencia != "Todas":
 if busca:
     df_filtrado = df_filtrado[df_filtrado["nome"].str.lower().str.contains(busca.lower())]
 
-# ── TABELA ────────────────────────────────────────────────────────────────────
-def badge_sacer(s):
-    if s == "Sacerdote":
-        return f'<span class="badge badge-sacerdote">Sacerdote</span>'
-    elif s == "Mestre":
-        return f'<span class="badge badge-mestre">Mestre</span>'
-    elif s == "Diácono":
-        return f'<span class="badge badge-diacono">Diácono</span>'
-    else:
-        return f'<span class="badge badge-sem">— sem registro —</span>'
-
-def badge_urgencia(u):
-    if u == "Alta":
-        return f'<span class="priority-high">🔴 Alta</span>'
-    elif u == "Média":
-        return f'<span class="priority-medium">🟡 Média</span>'
-    else:
-        return f'<span class="priority-low">🟢 Normal</span>'
-
-rows_html = ""
-for _, row in df_filtrado.iterrows():
-    first_name = row["nome"].split(",")[0].strip()
-    avatar_url = f"https://ui-avatars.com/api/?name={first_name}&background=random&size=64&bold=true"
-    rows_html += f"""
-    <tr>
-      <td>
-        <div class="name-cell">
-          <img src="{avatar_url}" class="avatar-sm" alt="">
-          <span style="font-weight:600">{row['nome']}</span>
-        </div>
-      </td>
-      <td><span class="age-pill">{row['idade']} anos</span></td>
-      <td style="color:#6b7280">{row['nascimento']}</td>
-      <td>{badge_sacer(row['sacerdocio'])}</td>
-      <td>{badge_urgencia(row['urgencia'])}</td>
-    </tr>
-    """
-
+# ── LISTA DE MEMBROS ──────────────────────────────────────────────────────────
 st.markdown(f"""
 <div class="section-header">
   <h2>Lista de Membros</h2>
   <span class="count-badge">{len(df_filtrado)} de {total}</span>
 </div>
+""", unsafe_allow_html=True)
+
+# Cabeçalho da tabela
+st.markdown("""
 <div class="elder-table">
   <table class="et">
     <thead>
@@ -330,12 +297,50 @@ st.markdown(f"""
         <th>Prioridade Pastoral</th>
       </tr>
     </thead>
-    <tbody>
-      {rows_html}
-    </tbody>
   </table>
 </div>
 """, unsafe_allow_html=True)
+
+# Renderizar cada membro individualmente
+SACERDOCIO_BADGES = {
+    "Sacerdote": ("🔵", "#dbeafe", "#1d4ed8"),
+    "Mestre":    ("🟢", "#d1fae5", "#065f46"),
+    "Diácono":   ("🟡", "#fef3c7", "#92400e"),
+    "":          ("⚪", "#f3f4f6", "#6b7280"),
+}
+
+URGENCIA_CORES = {
+    "Alta":   ("#fee2e2", "#991b1b", "🔴"),
+    "Média":  ("#fef3c7", "#92400e", "🟡"),
+    "Normal": ("#d1fae5", "#065f46", "🟢"),
+}
+
+for _, row in df_filtrado.iterrows():
+    first_name = row["nome"].split(",")[0].strip()
+    avatar_url = "https://ui-avatars.com/api/?name=" + first_name.replace(" ", "+") + "&background=random&size=64&bold=true"
+
+    sacer = row["sacerdocio"]
+    emoji_s, bg_s, cor_s = SACERDOCIO_BADGES.get(sacer, SACERDOCIO_BADGES[""])
+    sacer_label = sacer if sacer else "Sem registro"
+
+    urg = row["urgencia"]
+    bg_u, cor_u, emoji_u = URGENCIA_CORES.get(urg, URGENCIA_CORES["Normal"])
+
+    st.markdown(
+        f'<div style="display:flex;align-items:center;gap:16px;padding:10px 14px;'
+        f'border-bottom:1px solid #f1f5f9;background:#fff;">'
+        f'<img src="{avatar_url}" style="width:36px;height:36px;border-radius:50%;flex-shrink:0;" alt="">'
+        f'<div style="flex:2;font-weight:600;font-size:0.87rem;">{row["nome"]}</div>'
+        f'<div style="flex:0.6;"><span style="background:#eff6ff;color:#1d4ed8;border-radius:8px;'
+        f'padding:2px 10px;font-size:0.8rem;font-weight:700;">{row["idade"]} anos</span></div>'
+        f'<div style="flex:0.8;color:#6b7280;font-size:0.82rem;">{row["nascimento"]}</div>'
+        f'<div style="flex:0.8;"><span style="background:{bg_s};color:{cor_s};border-radius:10px;'
+        f'padding:2px 10px;font-size:0.75rem;font-weight:700;">{emoji_s} {sacer_label}</span></div>'
+        f'<div style="flex:0.7;"><span style="background:{bg_u};color:{cor_u};border-radius:10px;'
+        f'padding:2px 10px;font-size:0.75rem;font-weight:700;">{emoji_u} {urg}</span></div>'
+        f'</div>',
+        unsafe_allow_html=True
+    )
 
 # ── ANÁLISE RÁPIDA ────────────────────────────────────────────────────────────
 st.markdown("---")

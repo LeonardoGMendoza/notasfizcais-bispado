@@ -289,13 +289,233 @@ else:
     # Render the sidebar (Profile picture and name)
     render_sidebar(authenticator)
     
-    st.title(f"Bem-vindo ao Dashboard do Bispado ⛪")
-    
     st.markdown("""
-        <div class="custom-card">
-            <h3>Visão Geral</h3>
-            <p>Selecione uma das opções no menu lateral (à esquerda) para visualizar as Notas Fiscais, Quadro de Missão, ou acompanhamento dos Rapazes e Moças.</p>
+    <style>
+    /* ── Dashboard Summary Cards ── */
+    .dash-section { margin-bottom: 32px; }
+    .dash-section h3 { font-size: 1rem; font-weight: 700; color: #6b7280; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 14px; }
+    
+    .summary-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 14px; }
+    .summary-card {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 22px 20px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+        transition: transform .2s, box-shadow .2s;
+        text-align: center;
+    }
+    .summary-card:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.09); cursor: pointer; }
+    .summary-icon { font-size: 2.2rem; margin-bottom: 8px; }
+    .summary-num  { font-size: 2.6rem; font-weight: 900; line-height: 1; }
+    .summary-lbl  { font-size: 0.8rem; color: #6b7280; font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-top: 4px; }
+    .summary-sub  { font-size: 0.75rem; color: #9ca3af; margin-top: 6px; }
+    
+    /* ── Welcome Banner ── */
+    .welcome-banner {
+        background: linear-gradient(135deg, #fdf2f8 0%, #eff6ff 60%, #f0fdf4 100%);
+        border-radius: 22px;
+        padding: 28px 30px;
+        margin-bottom: 28px;
+        border: 1px solid rgba(217,79,138,0.12);
+        box-shadow: 0 4px 24px rgba(217,79,138,0.06);
+    }
+    .welcome-banner h2 { margin: 0 0 6px; font-size: 1.6rem; font-weight: 900; color: #1a1a1a; }
+    .welcome-banner p  { margin: 0; color: #4b5563; font-size: 0.92rem; line-height: 1.6; }
+    
+    /* ── Prospect Bar ── */
+    .prospect-bar {
+        background: #ffffff;
+        border-radius: 18px;
+        padding: 20px 24px;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 4px 18px rgba(0,0,0,0.04);
+        margin-bottom: 14px;
+    }
+    .prospect-bar h4 { margin: 0 0 10px; font-size: 1rem; font-weight: 800; }
+    .prog-bar-bg { background: #f3f4f6; border-radius: 8px; height: 10px; overflow: hidden; margin-bottom: 6px; }
+    .prog-bar-fill { height: 100%; border-radius: 8px; }
+    .prog-labels { display: flex; justify-content: space-between; font-size: 0.75rem; color: #6b7280; }
+    
+    .elder-mini-list { margin-top: 14px; }
+    .elder-mini-row {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 8px 0;
+        border-bottom: 1px solid #f1f5f9;
+        font-size: 0.82rem;
+    }
+    .elder-mini-row:last-child { border-bottom: none; }
+    .badge-sm {
+        display: inline-block; padding: 2px 8px;
+        border-radius: 8px; font-size: 0.68rem; font-weight: 700;
+    }
+    .bs-alta   { background: #fee2e2; color: #991b1b; }
+    .bs-media  { background: #fef3c7; color: #92400e; }
+    .bs-normal { background: #d1fae5; color: #065f46; }
+    </style>
+    """, unsafe_allow_html=True)
+
+    # ── Welcome Banner ────────────────────────────────────────────────────────
+    st.markdown(f"""
+    <div class="welcome-banner">
+        <h2>⛪ Controle do Bispado — Visão Geral</h2>
+        <p>Acompanhe os principais indicadores da Ala Vila Jacuí. Use o menu lateral para acessar 
+           Notas Fiscais, Missão, Rapazes, Moças, <strong>Élderes em Perspectiva</strong> e o 
+           <strong>Diretório de Jovens</strong>.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── KPI Summary Grid ──────────────────────────────────────────────────────
+    st.markdown('<div class="dash-section"><h3>📊 Resumo Rápido</h3>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="summary-grid">
+      <div class="summary-card">
+        <div class="summary-icon">📋</div>
+        <div class="summary-num" style="color:#D94F8A">35</div>
+        <div class="summary-lbl">Élderes em Perspectiva</div>
+        <div class="summary-sub">Ala Vila Jacuí</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon">🔴</div>
+        <div class="summary-num" style="color:#EF4444">21</div>
+        <div class="summary-lbl">Sem Sacerdócio Registrado</div>
+        <div class="summary-sub">Necessitam atenção pastoral</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon">👦</div>
+        <div class="summary-num" style="color:#3B82F6">13</div>
+        <div class="summary-lbl">Rapazes no Diretório</div>
+        <div class="summary-sub">Sacerdócio Aarônico</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon">👧</div>
+        <div class="summary-num" style="color:#D94F8A">14</div>
+        <div class="summary-lbl">Moças no Diretório</div>
+        <div class="summary-sub">Organização das Moças</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-icon">⚠️</div>
+        <div class="summary-num" style="color:#F59E0B">2</div>
+        <div class="summary-lbl">Não Batizados</div>
+        <div class="summary-sub">Oportunidade de convite</div>
+      </div>
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # ── Élderes em Perspectiva — Mini Painel ──────────────────────────────────
+    st.markdown('<div class="dash-section"><h3>📋 Élderes em Perspectiva — Prioridades</h3>', unsafe_allow_html=True)
+
+    col_ep1, col_ep2 = st.columns([1.2, 1])
+
+    with col_ep1:
+        # Barra de progresso: com sacerdócio vs sem
+        com_sacer = 14
+        sem_sacer = 21
+        total_ep  = 35
+        pct_com   = round(com_sacer / total_ep * 100)
+        st.markdown(f"""
+        <div class="prospect-bar">
+          <h4>Situação do Sacerdócio dos 35 em Perspectiva</h4>
+          <div class="prog-bar-bg">
+            <div class="prog-bar-fill" style="width:{pct_com}%; background: linear-gradient(90deg, #10B981, #3B82F6);"></div>
+          </div>
+          <div class="prog-labels">
+            <span>✅ Com sacerdócio: {com_sacer} ({pct_com}%)</span>
+            <span>❌ Sem: {sem_sacer} ({100-pct_com}%)</span>
+          </div>
+          <div style="margin-top:14px; font-size:0.82rem; color:#374151;">
+            <div style="display:flex; gap:20px; flex-wrap:wrap;">
+              <span>🔵 <b>Sacerdote:</b> 13</span>
+              <span>🟢 <b>Mestre:</b> 2</span>
+              <span>🟡 <b>Diácono:</b> 1</span>
+              <span>🔴 <b>Sem registro:</b> 21</span>
+            </div>
+          </div>
         </div>
+        """, unsafe_allow_html=True)
+
+    with col_ep2:
+        st.markdown("""
+        <div class="prospect-bar">
+          <h4>🎯 Alta Prioridade (18–30 anos sem sacerdócio)</h4>
+          <div class="elder-mini-list">
+            <div class="elder-mini-row">
+              <span><b>De Freitas, Deberson</b> — 52 anos</span>
+              <span class="badge-sm bs-media">Média</span>
+            </div>
+            <div class="elder-mini-row">
+              <span><b>Ferreira Melchior, Guilherme</b> — 20 anos</span>
+              <span class="badge-sm bs-alta">Alta</span>
+            </div>
+            <div class="elder-mini-row">
+              <span><b>Mota De Freitas, Guilherme</b> — 26 anos</span>
+              <span class="badge-sm bs-alta">Alta</span>
+            </div>
+            <div class="elder-mini-row">
+              <span><b>Müller Junior, Emerson</b> — 26 anos</span>
+              <span class="badge-sm bs-alta">Alta</span>
+            </div>
+            <div class="elder-mini-row">
+              <span><b>Oliveira, Mateus Rodrigues</b> — 24 anos</span>
+              <span class="badge-sm bs-alta">Alta</span>
+            </div>
+          </div>
+          <div style="text-align:center; margin-top:10px;">
+            <a href="/Elderes_Perspectiva" style="color:#D94F8A; font-size:0.8rem; font-weight:700; text-decoration:none;">Ver lista completa →</a>
+          </div>
+        </div>
+        """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # ── Jovens — Mini Painel ──────────────────────────────────────────────────
+    st.markdown('<div class="dash-section"><h3>🌟 Jovens — Visão Rápida</h3>', unsafe_allow_html=True)
+    st.markdown("""
+    <div class="summary-grid" style="grid-template-columns: repeat(auto-fill, minmax(180px,1fr));">
+      <div class="summary-card" style="border-left: 4px solid #3B82F6;">
+        <div class="summary-icon">🏫</div>
+        <div class="summary-num" style="color:#3B82F6; font-size:2rem;">4</div>
+        <div class="summary-lbl">Rapazes 12–13 anos</div>
+        <div class="summary-sub">Diáconos / Mestres</div>
+      </div>
+      <div class="summary-card" style="border-left: 4px solid #3B82F6;">
+        <div class="summary-icon">🙏</div>
+        <div class="summary-num" style="color:#3B82F6; font-size:2rem;">5</div>
+        <div class="summary-lbl">Rapazes 14–17 anos</div>
+        <div class="summary-sub">Mestres / Sacerdotes</div>
+      </div>
+      <div class="summary-card" style="border-left: 4px solid #3B82F6;">
+        <div class="summary-icon">⭐</div>
+        <div class="summary-num" style="color:#3B82F6; font-size:2rem;">4</div>
+        <div class="summary-lbl">Rapazes 18+ anos</div>
+        <div class="summary-sub">Futuros Élderes</div>
+      </div>
+      <div class="summary-card" style="border-left: 4px solid #D94F8A;">
+        <div class="summary-icon">🌸</div>
+        <div class="summary-num" style="color:#D94F8A; font-size:2rem;">6</div>
+        <div class="summary-lbl">Moças 12–13 anos</div>
+        <div class="summary-sub">Guardiãs da Luz</div>
+      </div>
+      <div class="summary-card" style="border-left: 4px solid #D94F8A;">
+        <div class="summary-icon">💫</div>
+        <div class="summary-num" style="color:#D94F8A; font-size:2rem;">5</div>
+        <div class="summary-lbl">Moças 14–17 anos</div>
+        <div class="summary-sub">Edificadoras da Fé</div>
+      </div>
+      <div class="summary-card" style="border-left: 4px solid #D94F8A;">
+        <div class="summary-icon">🎓</div>
+        <div class="summary-num" style="color:#D94F8A; font-size:2rem;">3</div>
+        <div class="summary-lbl">Moças 18 anos</div>
+        <div class="summary-sub">Transição JAS</div>
+      </div>
+    </div>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.markdown("""
+    <div style="text-align:center; color:#9ca3af; font-size:0.78rem; margin-top:10px; padding-bottom:20px;">
+      Dados sincronizados com o LCR — Ala Vila Jacuí (2119331) — agosto 2026
+    </div>
     """, unsafe_allow_html=True)
     
     # You can also show quick stats here by importing from database.py
